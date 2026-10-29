@@ -1,0 +1,231 @@
+<!doctype html>
+
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <title>Candi Prambanan — Virtual Tour</title>
+    <link rel="stylesheet" href="css/style.css?v=5" />
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+
+    <div id="loader">
+      <img class="ld-illus" src="assets/loading.png" alt="" />
+      <div class="ld-pill">WEBGIS &amp; VIRTUAL TOUR · PRAMBANAN</div>
+      <div class="ld-bar"><div id="ld-fill"></div></div>
+
+      <div class="load-state" data-i18n="loadModel">Memuat model candi</div>
+      <div id="stageTxt">—</div>
+
+      <div class="load-note">
+        <svg class="headphone-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+          <path d="M4 14h3v5H5a1 1 0 0 1-1-1v-4Zm16 0h-3v5h2a1 1 0 0 0 1-1v-4Z" />
+        </svg>
+        <span data-i18n="loadHeadphones">Gunakan headphone untuk pengalaman terbaik</span>
+      </div>
+      <div id="mobileWarn" class="hidden">
+        <strong data-i18n="mobileTitle">Perangkat tidak didukung</strong>
+        <span data-i18n="mobileDesc">Virtual tour ini hanya dapat diakses melalui desktop atau laptop. Silakan buka kembali dari komputer Anda.</span>
+      </div>
+      <div id="errBox"></div>
+    </div>
+
+    <script>
+    (function () {
+      var ua = navigator.userAgent;
+      var mobile =
+        /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(ua) ||
+        (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) || // iPadOS
+        (window.matchMedia("(pointer: coarse)").matches && innerWidth < 1024);
+      window.__isMobileBlocked = mobile;
+      if (mobile) {
+        document.documentElement.classList.add("mobile-blocked");
+        var lang = (navigator.language || "id").toLowerCase().indexOf("id") === 0 ? "id" : "en";
+        var t = {
+          id: ["Perangkat tidak didukung", "Virtual tour ini hanya dapat diakses melalui desktop atau laptop. Silakan buka kembali dari komputer Anda."],
+          en: ["Device not supported", "This virtual tour is only available on desktop or laptop. Please reopen it from a computer."]
+        }[lang];
+        document.addEventListener("DOMContentLoaded", function () {
+          var box = document.getElementById("mobileWarn");
+          box.children[0].textContent = t[0];
+          box.children[1].textContent = t[1];
+          box.classList.remove("hidden");
+        });
+      }
+    })();
+    </script>
+
+    <script src="js/loader.js"></script>
+
+    <div id="entryScreen" class="hidden">
+      <div class="map-clouds entry-clouds" aria-hidden="true">
+        <img class="cloud c1" src="assets/awan.png" alt="" />
+        <img class="cloud c2" src="assets/awan.png" alt="" />
+        <img class="cloud c3" src="assets/awan.png" alt="" />
+        <img class="cloud c4" src="assets/awan.png" alt="" />
+        <img class="cloud c5" src="assets/awan.png" alt="" />
+        <img class="cloud c6" src="assets/awan.png" alt="" />
+        <img class="cloud c7" src="assets/awan.png" alt="" />
+        <img class="cloud c8" src="assets/awan.png" alt="" />
+        <img class="cloud c9" src="assets/awan.png" alt="" />
+        <img class="cloud c10" src="assets/awan.png" alt="" />
+        <img class="cloud c11" src="assets/awan.png" alt="" />
+        <img class="cloud c12" src="assets/awan.png" alt="" />
+      </div>
+      <div class="entry-brand">VIRTUAL HERITAGE</div>
+      <div id="entryLangSwitch" aria-label="Language selection">
+        <button class="langBtn active" data-lang="id" type="button">Bahasa Indonesia</button>
+        <button class="langBtn" data-lang="en" type="button">English</button>
+      </div>
+      <h2 id="entryTitleCycle" aria-label="Prambanan" aria-live="polite">
+        <span class="entry-title-word active">Prambanan</span>
+        <span class="entry-title-word">ꦥꦿꦩ꧀ꦧꦤꦤ꧀</span>
+      </h2>
+      <div class="entry-rule" aria-hidden="true"></div>
+      <p class="entry-subtitle" data-i18n="entrySubtitle">IKUTI JEJAK MENUJU CANDI PRAMBANAN</p>
+      <button id="enterBtn" data-i18n="entryButton">Mulai Perjalanan</button>
+      <button id="mapBtn" type="button" data-i18n="mapButton">Lihat Peta</button>
+      <div class="entry-footer">
+        <span data-i18n="entryCredit">Warisan budaya · Tur virtual interaktif</span>
+        <span data-i18n="entryCopyright">© Candi Prambanan</span>
+      </div>
+    </div>
+
+    <div id="mapBackdrop"></div>
+    <div id="mapScreen" class="hidden" aria-label="Prambanan Temple Complex overview">
+    <button id="mapBackBtn" type="button" data-i18n="mapBack">← Back</button>
+
+    <aside class="map-panel">
+      <p class="map-panel-kicker" data-i18n="panelKicker">PANDUAN EKSPLORASI</p>
+      <h3 class="map-panel-title" data-i18n="panelTitle">Temukan setiap candi</h3>
+      <p class="map-panel-desc" data-i18n="panelDesc">Arahkan kursor pada model untuk melihat nama candi. Klik titik untuk memasuki tur virtual.</p>
+      <p class="map-panel-legend"><span class="map-panel-dot"></span><span data-i18n="panelLegend">Hotspot interaktif</span></p>
+    </aside>
+
+    <div class="map-title">
+      <p class="map-title-name">Candi Prambanan</p>
+      <h2 class="map-title-jawa">ꦕꦟ꧀ꦝꦶꦥꦿꦩ꧀ꦧꦤꦤ꧀</h2>
+    </div>
+
+    <div class="map-clouds entry-clouds" aria-hidden="true">
+      <img class="cloud c1" src="assets/awan.png" alt="" />
+      <img class="cloud c2" src="assets/awan.png" alt="" />
+      <img class="cloud c3" src="assets/awan.png" alt="" />
+      <img class="cloud c4" src="assets/awan.png" alt="" />
+      <img class="cloud c5" src="assets/awan.png" alt="" />
+      <img class="cloud c6" src="assets/awan.png" alt="" />
+      <img class="cloud c7" src="assets/awan.png" alt="" />
+      <img class="cloud c8" src="assets/awan.png" alt="" />
+      <img class="cloud c9" src="assets/awan.png" alt="" />
+      <img class="cloud c10" src="assets/awan.png" alt="" />
+      <img class="cloud c11" src="assets/awan.png" alt="" />
+      <img class="cloud c12" src="assets/awan.png" alt="" />
+    </div>
+
+    <div id="mapLabels" class="map-canvas" aria-label="Temple locations">
+        <svg id="mapSvg" class="map-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"
+          role="img" aria-label="Rute perjalanan kompleks Candi Prambanan"></svg>
+      </div>
+
+      <div id="templeDialogBackdrop" class="temple-dialog-backdrop hidden"></div>
+      <div id="templeDialog" class="temple-dialog hidden" role="dialog" aria-modal="true">
+        <button id="templeDialogClose" class="temple-dialog-close" type="button" aria-label="Tutup">✕</button>
+        <p id="templeDialogKicker" class="temple-dialog-kicker"></p>
+        <h3 id="templeDialogTitle" class="temple-dialog-title"></h3>
+        <div class="temple-dialog-divider"></div>
+        <p id="templeDialogDesc" class="temple-dialog-desc"></p>
+        <dl id="templeDialogFacts" class="temple-dialog-facts"></dl>
+      </div>
+    </div>
+
+    <div id="topbar">
+      <span class="ttl" data-i18n="topbarTitle">Candi Prambanan</span>
+      <span class="tloc" data-i18n="topbarLocation">Sleman, D.I Yogyakarta</span>
+      <div id="langSwitch">
+        <button class="langBtn active" data-lang="id" type="button">ID</button>
+        <button class="langBtn" data-lang="en" type="button">EN</button>
+      </div>
+    </div>
+    <div id="journeyTransition" class="hidden" aria-hidden="true">
+      <span data-i18n="transitionLabel">Memasuki Candi Prambanan</span>
+    </div>
+    <div id="journeyLayer" class="hidden" aria-label="Journey waypoints">
+      <button class="journeyWaypoint" data-waypoint="entrance" type="button">
+        <span class="waypointDot"></span>
+        <span class="waypointLabel" data-i18n="waypointEntrance">Pintu masuk</span>
+      </button>
+      <button class="journeyWaypoint" data-waypoint="interior" type="button">
+        <span class="waypointDot"></span>
+        <span class="waypointLabel" data-i18n="waypointInterior">Ruang dalam</span>
+      </button>
+    </div>
+    <div id="modeBtns">
+      <button type="button" class="mbtn" id="btnSV" data-i18n="btnSV">Street View</button>
+      <button type="button" class="mbtn active" id="btnOrbit" data-i18n="btnOrbit">Jelajah</button>
+    </div>
+    <div id="tourNav">
+      <button type="button" class="navBtn" id="btnBack">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+        <span data-i18n="navBack">Kembali</span>
+      </button>
+      <button type="button" class="navBtn" id="btnMap">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4Z" />
+          <path d="M9 4v13.5M15 6.5V20" />
+        </svg>
+        <span data-i18n="navMap">Peta</span>
+      </button>
+    </div>
+    <div id="fpsBox">FPS: --</div>
+    <div id="lockMsg" data-i18n="lockMsg">Klik canvas untuk mengunci mouse</div>
+
+    <div id="hints">
+      <div class="hrow"></div>
+    </div>
+
+    <div id="poiLayer"></div>
+
+    <div id="mmBox"><canvas id="mm" width="280" height="350"></canvas></div>
+
+    <div id="joystick">
+      <div id="joystickKnob"></div>
+    </div>
+
+    <div id="poiModal" class="hidden">
+      <div id="poiCard">
+        <button id="poiClose" aria-label="Tutup">✕</button>
+        <div id="poiImgFrame">
+          <img id="popup-img" alt="" />
+        </div>
+        <div id="poiBody">
+          <span id="poiDir" class="poiDir">—</span>
+          <h3 id="poiTitle">—</h3>
+          <p id="poiDesc">—</p>
+          <button id="poiAudioBtn" class="audioBtn" type="button">
+            <span id="poiAudioIcon">▶</span>
+            <span id="poiAudioLabel">Dengarkan</span>
+          </button>
+          <audio id="poiAudio" preload="none"></audio>
+        </div>
+      </div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/": "https://cdn.jsdelivr.net/npm/three@0.160.0/",
+          "three-mesh-bvh": "https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.6/build/index.module.js"
+        }
+      }
+    </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <audio id="bgMusic" loop preload="auto">
+    <source src="assets/audio/backsound.mp3" type="audio/mpeg" />
+  </audio>
+  <script type="module" src="js/main.js?v=22"></script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGIS Candi Prambanan</title>
+    <meta name="description" content="WebGIS Candi Prambanan" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="WebGIS Candi Prambanan" />
+    <meta property="og:description" content="WebGIS Candi Prambanan" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WebGIS Candi Prambanan" />
+    <meta name="twitter:description" content="WebGIS Candi Prambanan" />
+    <link rel="icon" type="image/png" href="./logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+    <script>
+    if (location.pathname.endsWith("/index.html")) {
+      history.replaceState(null, "", location.pathname.replace(/index\.html$/, "") + location.search + location.hash);
+    }
+    </script>
+    <script type="module" crossorigin src="./lib/app.js"></script>
+    <link rel="stylesheet" crossorigin href="./css/style.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  </head>
+  <body class="intro-lock">
+    <div id="loader">
+      <img class="ld-img" src="./css/assets/loading.png" alt="" />
+      <div class="ld-pill">WEBGIS &amp; VIRTUAL TOUR · PRAMBANAN</div>
+      <div class="ld-bar"><span id="ld-fill"></span></div>
+    </div>
+    <div id="intro">
+      <div id="intro-stage"></div>
+    </div>
+    <div id="root"></div>
+    <script src="./lib/loader.js"></script>
+    <script src="./lib/intro.js"></script>
+    <script src="./lib/credits.js"></script>
+    <script src="./lib/hero3d.js"></script>
+  </body>
+</html>
