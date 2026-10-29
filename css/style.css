@@ -3908,7 +3908,7 @@ body {
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 ::-webkit-scrollbar {
   width: 4px;
@@ -4659,7 +4659,7 @@ footer[style*="background: var(--yellow)"] *:not(.btn-primary):not(.btn-primary 
     opacity 0.8s ease;
 }
 .iw.show { opacity: 1; }
-body.intro-lock { overflow: hidden; }
+body.intro-lock { overflow: auto; }
 
 @media (max-width: 768px) {
   .iw { font-size: clamp(20px, 7vw, 34px); }
