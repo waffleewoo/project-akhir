@@ -1,16 +1,16 @@
 <!doctype html>
-
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
     <title>Candi Prambanan — Virtual Tour</title>
-    <link rel="stylesheet" href="css/style.css?v=5" />
+    <link rel="stylesheet" href="css/style.css?v=6" />
   </head>
   <body>
     <canvas id="c"></canvas>
 
+    <!-- Loader -->
     <div id="loader">
       <img class="ld-illus" src="assets/loading.png" alt="" />
       <div class="ld-pill">WEBGIS &amp; VIRTUAL TOUR · PRAMBANAN</div>
@@ -27,41 +27,43 @@
         <span data-i18n="loadHeadphones">Gunakan headphone untuk pengalaman terbaik</span>
       </div>
       <div id="mobileWarn" class="hidden">
-        <strong data-i18n="mobileTitle">Perangkat tidak didukung</strong>
-        <span data-i18n="mobileDesc">Virtual tour ini hanya dapat diakses melalui desktop atau laptop. Silakan buka kembali dari komputer Anda.</span>
+        <strong>Perangkat tidak didukung</strong>
+        <span>Virtual tour ini hanya dapat diakses melalui desktop atau laptop. Silakan buka kembali dari komputer Anda.</span>
       </div>
       <div id="errBox"></div>
     </div>
 
+    <!-- Deteksi perangkat mobile (tur hanya untuk desktop) -->
     <script>
-    (function () {
-      var ua = navigator.userAgent;
-      var mobile =
-        /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(ua) ||
-        (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) || // iPadOS
-        (window.matchMedia("(pointer: coarse)").matches && innerWidth < 1024);
-      window.__isMobileBlocked = mobile;
-      if (mobile) {
+      (function () {
+        var ua = navigator.userAgent;
+        var mobile =
+          /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(ua) ||
+          (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) || // iPadOS
+          (window.matchMedia("(pointer: coarse)").matches && innerWidth < 1024);
+        window.__isMobileBlocked = mobile;
+        if (!mobile) return;
+
         document.documentElement.classList.add("mobile-blocked");
         var lang = (navigator.language || "id").toLowerCase().indexOf("id") === 0 ? "id" : "en";
-        var t = {
+        var text = {
           id: ["Perangkat tidak didukung", "Virtual tour ini hanya dapat diakses melalui desktop atau laptop. Silakan buka kembali dari komputer Anda."],
-          en: ["Device not supported", "This virtual tour is only available on desktop or laptop. Please reopen it from a computer."]
+          en: ["Device not supported", "This virtual tour is only available on desktop or laptop. Please reopen it from a computer."],
         }[lang];
         document.addEventListener("DOMContentLoaded", function () {
           var box = document.getElementById("mobileWarn");
-          box.children[0].textContent = t[0];
-          box.children[1].textContent = t[1];
+          box.children[0].textContent = text[0];
+          box.children[1].textContent = text[1];
           box.classList.remove("hidden");
         });
-      }
-    })();
+      })();
     </script>
 
     <script src="js/loader.js"></script>
 
+    <!-- Layar masuk -->
     <div id="entryScreen" class="hidden">
-      <div class="map-clouds entry-clouds" aria-hidden="true">
+      <div class="clouds" aria-hidden="true">
         <img class="cloud c1" src="assets/awan.png" alt="" />
         <img class="cloud c2" src="assets/awan.png" alt="" />
         <img class="cloud c3" src="assets/awan.png" alt="" />
@@ -84,7 +86,6 @@
         <span class="entry-title-word active">Prambanan</span>
         <span class="entry-title-word">ꦥꦿꦩ꧀ꦧꦤꦤ꧀</span>
       </h2>
-      <div class="entry-rule" aria-hidden="true"></div>
       <p class="entry-subtitle" data-i18n="entrySubtitle">IKUTI JEJAK MENUJU CANDI PRAMBANAN</p>
       <button id="enterBtn" data-i18n="entryButton">Mulai Perjalanan</button>
       <button id="mapBtn" type="button" data-i18n="mapButton">Lihat Peta</button>
@@ -94,53 +95,41 @@
       </div>
     </div>
 
-    <div id="mapBackdrop"></div>
+    <!-- Layar peta -->
     <div id="mapScreen" class="hidden" aria-label="Prambanan Temple Complex overview">
-    <button id="mapBackBtn" type="button" data-i18n="mapBack">← Back</button>
+      <button id="mapBackBtn" type="button" data-i18n="mapBack">← Back</button>
 
-    <aside class="map-panel">
-      <p class="map-panel-kicker" data-i18n="panelKicker">PANDUAN EKSPLORASI</p>
-      <h3 class="map-panel-title" data-i18n="panelTitle">Temukan setiap candi</h3>
-      <p class="map-panel-desc" data-i18n="panelDesc">Arahkan kursor pada model untuk melihat nama candi. Klik titik untuk memasuki tur virtual.</p>
-      <p class="map-panel-legend"><span class="map-panel-dot"></span><span data-i18n="panelLegend">Hotspot interaktif</span></p>
-    </aside>
+      <aside class="map-panel">
+        <p class="map-panel-kicker" data-i18n="panelKicker">PANDUAN EKSPLORASI</p>
+        <h3 class="map-panel-title" data-i18n="panelTitle">Temukan setiap candi</h3>
+        <p class="map-panel-desc" data-i18n="panelDesc">Arahkan kursor pada model untuk melihat nama candi. Klik titik untuk memasuki tur virtual.</p>
+        <p class="map-panel-legend"><span class="map-panel-dot"></span><span data-i18n="panelLegend">Hotspot interaktif</span></p>
+      </aside>
 
-    <div class="map-title">
-      <p class="map-title-name">Candi Prambanan</p>
-      <h2 class="map-title-jawa">ꦕꦟ꧀ꦝꦶꦥꦿꦩ꧀ꦧꦤꦤ꧀</h2>
-    </div>
-
-    <div class="map-clouds entry-clouds" aria-hidden="true">
-      <img class="cloud c1" src="assets/awan.png" alt="" />
-      <img class="cloud c2" src="assets/awan.png" alt="" />
-      <img class="cloud c3" src="assets/awan.png" alt="" />
-      <img class="cloud c4" src="assets/awan.png" alt="" />
-      <img class="cloud c5" src="assets/awan.png" alt="" />
-      <img class="cloud c6" src="assets/awan.png" alt="" />
-      <img class="cloud c7" src="assets/awan.png" alt="" />
-      <img class="cloud c8" src="assets/awan.png" alt="" />
-      <img class="cloud c9" src="assets/awan.png" alt="" />
-      <img class="cloud c10" src="assets/awan.png" alt="" />
-      <img class="cloud c11" src="assets/awan.png" alt="" />
-      <img class="cloud c12" src="assets/awan.png" alt="" />
-    </div>
-
-    <div id="mapLabels" class="map-canvas" aria-label="Temple locations">
-        <svg id="mapSvg" class="map-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"
-          role="img" aria-label="Rute perjalanan kompleks Candi Prambanan"></svg>
+      <div class="map-title">
+        <p class="map-title-name">Candi Prambanan</p>
+        <h2 class="map-title-jawa">ꦕꦟ꧀ꦝꦶꦥꦿꦩ꧀ꦧꦤꦤ꧀</h2>
       </div>
 
-      <div id="templeDialogBackdrop" class="temple-dialog-backdrop hidden"></div>
-      <div id="templeDialog" class="temple-dialog hidden" role="dialog" aria-modal="true">
-        <button id="templeDialogClose" class="temple-dialog-close" type="button" aria-label="Tutup">✕</button>
-        <p id="templeDialogKicker" class="temple-dialog-kicker"></p>
-        <h3 id="templeDialogTitle" class="temple-dialog-title"></h3>
-        <div class="temple-dialog-divider"></div>
-        <p id="templeDialogDesc" class="temple-dialog-desc"></p>
-        <dl id="templeDialogFacts" class="temple-dialog-facts"></dl>
+      <div class="clouds" aria-hidden="true">
+        <img class="cloud c1" src="assets/awan.png" alt="" />
+        <img class="cloud c2" src="assets/awan.png" alt="" />
+        <img class="cloud c3" src="assets/awan.png" alt="" />
+        <img class="cloud c4" src="assets/awan.png" alt="" />
+        <img class="cloud c5" src="assets/awan.png" alt="" />
+        <img class="cloud c6" src="assets/awan.png" alt="" />
+        <img class="cloud c7" src="assets/awan.png" alt="" />
+        <img class="cloud c8" src="assets/awan.png" alt="" />
+        <img class="cloud c9" src="assets/awan.png" alt="" />
+        <img class="cloud c10" src="assets/awan.png" alt="" />
+        <img class="cloud c11" src="assets/awan.png" alt="" />
+        <img class="cloud c12" src="assets/awan.png" alt="" />
       </div>
+
+      <div id="mapPins" class="map-canvas" aria-label="Temple locations"></div>
     </div>
 
+    <!-- HUD tur -->
     <div id="topbar">
       <span class="ttl" data-i18n="topbarTitle">Candi Prambanan</span>
       <span class="tloc" data-i18n="topbarLocation">Sleman, D.I Yogyakarta</span>
@@ -149,9 +138,7 @@
         <button class="langBtn" data-lang="en" type="button">EN</button>
       </div>
     </div>
-    <div id="journeyTransition" class="hidden" aria-hidden="true">
-      <span data-i18n="transitionLabel">Memasuki Candi Prambanan</span>
-    </div>
+    <div id="journeyTransition" class="hidden" aria-hidden="true"><span></span></div>
     <div id="journeyLayer" class="hidden" aria-label="Journey waypoints">
       <button class="journeyWaypoint" data-waypoint="entrance" type="button">
         <span class="waypointDot"></span>
@@ -179,20 +166,10 @@
         <span data-i18n="navMap">Peta</span>
       </button>
     </div>
-    <div id="fpsBox">FPS: --</div>
-    <div id="lockMsg" data-i18n="lockMsg">Klik canvas untuk mengunci mouse</div>
 
-    <div id="hints">
-      <div class="hrow"></div>
-    </div>
-
+    <div id="hints"><div class="hrow"></div></div>
     <div id="poiLayer"></div>
-
     <div id="mmBox"><canvas id="mm" width="280" height="350"></canvas></div>
-
-    <div id="joystick">
-      <div id="joystickKnob"></div>
-    </div>
 
     <div id="poiModal" class="hidden">
       <div id="poiCard">
@@ -222,10 +199,10 @@
         }
       }
     </script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <audio id="bgMusic" loop preload="auto">
-    <source src="assets/audio/backsound.mp3" type="audio/mpeg" />
-  </audio>
-  <script type="module" src="js/main.js?v=22"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <audio id="bgMusic" loop preload="auto">
+      <source src="assets/audio/backsound.mp3" type="audio/mpeg" />
+    </audio>
+    <script type="module" src="js/main.js?v=23"></script>
   </body>
 </html>

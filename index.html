@@ -1,44 +1,318 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebGIS Candi Prambanan</title>
-    <meta name="description" content="WebGIS Candi Prambanan" />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="WebGIS Candi Prambanan" />
-    <meta property="og:description" content="WebGIS Candi Prambanan" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="WebGIS Candi Prambanan" />
-    <meta name="twitter:description" content="WebGIS Candi Prambanan" />
-    <link rel="icon" type="image/png" href="./logo.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
-    <script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebGIS Candi Prambanan</title>
+  <meta name="description" content="WebGIS Candi Prambanan" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="WebGIS Candi Prambanan" />
+  <meta property="og:description" content="WebGIS Candi Prambanan" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="WebGIS Candi Prambanan" />
+  <meta name="twitter:description" content="WebGIS Candi Prambanan" />
+  <link rel="icon" type="image/png" href="./logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+
+  <script>
+    // hilangkan "index.html" dari url
     if (location.pathname.endsWith("/index.html")) {
       history.replaceState(null, "", location.pathname.replace(/index\.html$/, "") + location.search + location.hash);
     }
-    </script>
-    <script type="module" crossorigin src="./lib/app.js"></script>
-    <link rel="stylesheet" crossorigin href="./css/style.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
-  </head>
-  <body>
-    <div id="loader">
-      <img class="ld-img" src="./css/assets/loading.png" alt="" />
-      <div class="ld-pill">WEBGIS &amp; VIRTUAL TOUR · PRAMBANAN</div>
-      <div class="ld-bar"><span id="ld-fill"></span></div>
+  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+</head>
+<body>
+
+  <!-- LOADING + INTRO -->
+  <div id="loader">
+    <img class="ld-img" src="./css/assets/loading.png" alt="" />
+    <div class="ld-pill">WEBGIS &amp; VIRTUAL TOUR · PRAMBANAN</div>
+    <div class="ld-bar"><span id="ld-fill"></span></div>
+  </div>
+  <div id="intro"><div id="intro-stage"></div></div>
+
+  <!-- NAVBAR -->
+  <nav id="nav" class="nav">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg width="16" height="18" viewBox="0 0 16 20" fill="#2a2119">
+          <rect x="7" y="0" width="2" height="2" rx="1"/><rect x="6" y="2" width="4" height="2" rx=".5"/>
+          <rect x="5" y="4" width="6" height="2" rx=".5"/><rect x="4" y="6" width="8" height="2" rx=".5"/>
+          <rect x="3" y="8" width="10" height="3" rx=".5"/><rect x="1" y="11" width="14" height="2.5" rx=".5"/>
+          <rect x="0" y="13.5" width="16" height="3" rx=".5"/><rect x="1" y="16.5" width="14" height="3.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="nav-title">Candi Prambanan</div>
+        <div class="nav-sub">WebGIS · Virtual Tour</div>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a href="#tentang">Pengenalan</a>
+      <a href="#data">Data</a>
+      <a href="#peta">Peta</a>
+      <a href="#tour">Tour</a>
     </div>
-    <div id="intro">
-      <div id="intro-stage"></div>
+    <a href="#peta" class="btn-primary nav-cta">Buka Peta →</a>
+
+    <button id="nav-burger" class="nav-burger" aria-label="Menu">
+      <svg class="ic-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+      <svg class="ic-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="nav-menu">
+      <a href="#tentang">Pengenalan</a>
+      <a href="#data">Data</a>
+      <a href="#peta">Peta</a>
+      <a href="#tour">Tour</a>
+      <a href="#peta" class="btn-primary">Buka Peta →</a>
     </div>
-    <div id="root"></div>
-    <script src="./lib/loader.js"></script>
-    <script src="./lib/intro.js"></script>
-    <script src="./lib/credits.js"></script>
-    <script src="./lib/hero3d.js"></script>
-  </body>
+  </nav>
+
+  <main class="page">
+
+    <!-- HERO -->
+    <section id="hero" class="hero">
+      <svg class="hero-star" viewBox="0 0 120 120" width="120"><path d="M60 0L62.6 57.4L120 60L62.6 62.6L60 120L57.4 62.6L0 60L57.4 57.4Z"/></svg>
+      <div class="hero-spacer"></div>
+      <div class="main-container hero-content">
+        <div class="hero-bottom fade-up">
+          <p>Mengenal Kompleks Candi Prambanan melalui peta interaktif dan eksplorasi virtual 3D.</p>
+          <a href="#tentang" class="btn-secondary">Pelajari ↓</a>
+        </div>
+      </div>
+
+      <div id="hero-center">
+        <div class="hc-eyebrow">WebGIS Interaktif · Virtual Tour</div>
+        <h1 class="hc-title">
+          <span class="hc-line">Candi</span>
+          <span class="hc-line hc-serif">Prambanan</span>
+        </h1>
+        <model-viewer id="hero-3d" src="./model/candi_siwa.glb" alt="Model 3D Candi Siwa"
+          auto-rotate rotation-per-second="20deg" camera-controls disable-zoom
+          interaction-prompt="none" camera-orbit="30deg 70deg auto"
+          environment-image="neutral" exposure="0.9" shadow-intensity="0" loading="eager"></model-viewer>
+      </div>
+    </section>
+
+    <!-- PENGENALAN -->
+    <section id="tentang" class="section section-bg1">
+      <div class="main-container">
+        <div class="intro-split reveal">
+          <div>
+            <div class="ic-stage" id="ic-stage"></div>
+            <div class="ic-ctrl">
+              <button id="ic-prev" aria-label="Sebelumnya">←</button>
+              <div class="ic-dots" id="ic-dots"></div>
+              <button id="ic-next" aria-label="Berikutnya">→</button>
+            </div>
+          </div>
+          <div>
+            <div class="label label-muted">Pengenalan</div>
+            <h2>Jejak Sejarah.<br /><span class="text-green">Warisan Peradaban.</span></h2>
+            <p class="text-large intro-text">Prambanan dibangun untuk memuliakan Trimurti: Brahma, Wisnu, dan Siwa. Menara Siwa menjulang sekitar 47 meter di pusat kompleks.</p>
+            <div class="intro-stat">
+              <span class="intro-stat-num">240+</span>
+              <span class="intro-stat-label">Candi dalam<br />kompleks awal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATA MULTI-SENSOR (scroll horizontal) -->
+    <section id="data" class="section-data">
+      <div id="hs-wrap">
+        <div class="hscroll-sticky">
+          <div class="main-container">
+            <div class="head-line">
+              <div class="label label-muted">Metodologi Akuisisi</div>
+              <h2>Data Multi-Sensor</h2>
+            </div>
+          </div>
+          <div class="hscroll-track" id="hs-track"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIWAYAT PENELITIAN -->
+    <section id="history" class="section-history">
+      <div id="hx-wrap">
+        <div class="hx-sticky">
+          <div class="main-container hx-head">
+            <div class="label label-muted">Riwayat Penelitian TSPD</div>
+            <h2 class="hx-title">Dari Tahun ke Tahun</h2>
+            <p class="hx-hint">Scroll untuk menggeser · klik foto untuk detail</p>
+          </div>
+          <div class="hx-scene" id="hx-scene">
+            <div class="hx-string" id="hx-string"></div>
+            <div class="hx-track" id="hx-stack"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hx-detail" id="hx-detail" aria-hidden="true">
+        <button class="hx-close" id="hx-close" aria-label="Tutup">×</button>
+        <div class="hx-d-text">
+          <div class="hx-d-year" id="hx-d-year"></div>
+          <div class="hx-d-title" id="hx-d-title"></div>
+          <a class="hx-d-link" id="hx-d-link" href="#" target="_blank" rel="noopener" hidden></a>
+          <p class="hx-d-desc" id="hx-d-desc"></p>
+          <div class="hx-d-nav">
+            <button id="hx-prev" aria-label="Sebelumnya">←</button>
+            <span id="hx-count"></span>
+            <button id="hx-next" aria-label="Berikutnya">→</button>
+          </div>
+        </div>
+        <div class="hx-d-img" id="hx-d-img"></div>
+      </div>
+    </section>
+
+    <!-- PETA -->
+    <section id="peta" class="section section-bg1">
+      <div class="main-container">
+        <div class="peta-head reveal">
+          <div>
+            <div class="label label-muted">WebGIS Interaktif</div>
+            <h2 class="peta-title">Peta Kawasan Prambanan</h2>
+          </div>
+          <div class="peta-tools">
+            <div class="peta-coords" id="peta-coords" hidden>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              <span id="peta-coords-text"></span>
+            </div>
+            <div class="tabs-wrap" id="basemap-tabs">
+              <button class="tab-btn active" data-basemap="osm">
+                <div class="tab-highlight"></div>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h12M1 9h12M5 1v12M9 1v12" stroke="currentColor" stroke-width=".8" opacity=".5"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
+                <span>OpenStreetMap</span>
+              </button>
+              <button class="tab-btn" data-basemap="satellite">
+                <div class="tab-highlight"></div>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 1.5v11M1.5 7h11" stroke="currentColor" stroke-width=".8" opacity=".4"/><ellipse cx="7" cy="7" rx="3" ry="5.5" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="7" cy="7" r="1.2" fill="currentColor"/></svg>
+                <span>Esri Imagery</span>
+              </button>
+              <button class="tab-btn" data-basemap="topo">
+                <div class="tab-highlight"></div>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 11 L5 4.5 L8 7.5 L11 3 L13 11Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="currentColor" fill-opacity=".08"/></svg>
+                <span>OpenTopoMap</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="peta-grid reveal delay-2">
+          <div class="peta-map-wrap"><div id="map"></div></div>
+          <div class="peta-side">
+            <div class="side-card">
+              <div class="label-small">Informasi Lokasi</div>
+              <div class="info-row"><span>Kawasan</span><span>Kompleks Prambanan</span></div>
+              <div class="info-row"><span>Administrasi</span><span>Sleman, DIY</span></div>
+              <div class="info-row"><span>Status</span><span>UNESCO WHS 1991</span></div>
+              <div class="info-coord">7°45'7″S · 110°29'29″E</div>
+            </div>
+            <div class="side-card">
+              <div class="label-small">Kontrol Layer</div>
+              <button class="layer-btn on" data-layer="candi"   style="--c:#2a2119"><span class="dot"></span>Titik Candi Utama</button>
+              <button class="layer-btn on" data-layer="wahana"  style="--c:#3d6b65"><span class="dot"></span>Titik Candi Wahana</button>
+              <button class="layer-btn on" data-layer="area"    style="--c:#7d5b83"><span class="dot"></span>Area Kompleks</button>
+              <button class="layer-btn on" data-layer="base"    style="--c:#c0392b"><span class="dot"></span>Titik Base</button>
+              <button class="layer-btn on" data-layer="rover"   style="--c:#2563eb"><span class="dot"></span>Titik Rover</button>
+              <button class="layer-btn on" data-layer="prisma"  style="--c:#d97706"><span class="dot"></span>Titik Prisma</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIRTUAL TOUR -->
+    <section id="tour" class="tour-section">
+      <div class="main-container">
+        <div class="tour-top reveal">
+          <div>
+            <div class="label" style="color:var(--bg-3)">Virtual Tour 3D</div>
+            <h2>Langkah Masuk Menuju Masa Lalu</h2>
+          </div>
+          <div class="tour-side">
+            <p class="text-large">Pilih salah satu candi pada denah untuk melihat deskripsinya, lalu mulai Virtual Tour 3D interaktif berbasis HBIM.</p>
+            <a href="./Virtual Tour/index.html" class="tour-button">Masuk Virtual Tour →</a>
+          </div>
+        </div>
+        <div class="reveal delay-2">
+          <div class="floorplan-card" id="floorplan">
+            <div class="floorplan-top"><span>REKONSTRUKSI RUANG</span><span>KOMPLEKS PRAMBANAN</span></div>
+            <div id="fp-svg"></div>
+            <div class="floorplan-caption"><span>POROS UTARA—SELATAN</span><span>ILUSTRASI KONSEPTUAL</span></div>
+            <div class="floorplan-number">01</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="credit-footer">
+    <div class="cf-card">
+      <div class="cf-grid">
+
+        <div class="cf-col cf-left">
+          <div class="cf-h">Kredit</div>
+          <div class="cf-item"><span class="cf-label">Dikembangkan oleh</span><span class="cf-name">Azha Yuniati</span></div>
+          <div class="cf-item"><span class="cf-label">Dosen pembimbing</span><span class="cf-name">Ir. Erlyna Nour Arrofiqoh, S.T., M.Eng.</span></div>
+          <div class="cf-item"><span class="cf-label">Program studi</span><span class="cf-name">Teknologi Survei dan Pemetaan Dasar</span></div>
+          <div class="cf-item"><span class="cf-label">Institusi</span><span class="cf-name">Sekolah Vokasi, UGM</span></div>
+        </div>
+
+        <div class="cf-center">
+          <svg class="cf-logo" width="56" height="70" viewBox="0 0 16 20" fill="currentColor">
+            <rect x="7" y="0" width="2" height="2" rx="1"/><rect x="6" y="2" width="4" height="2" rx=".5"/>
+            <rect x="5" y="4" width="6" height="2" rx=".5"/><rect x="4" y="6" width="8" height="2" rx=".5"/>
+            <rect x="3" y="8" width="10" height="3" rx=".5"/><rect x="1" y="11" width="14" height="2.5" rx=".5"/>
+            <rect x="0" y="13.5" width="16" height="3" rx=".5"/><rect x="1" y="16.5" width="14" height="3.5"/>
+          </svg>
+          <div class="cf-title">Candi<br /><em>Prambanan</em></div>
+          <p class="cf-tag">Nothing lasts forever except the stories we leave</p>
+          <div class="cf-btns">
+            <a href="#peta" class="cf-btn solid">Buka peta <span>→</span></a>
+            <a href="./Virtual Tour/index.html" class="cf-btn ghost">Virtual tour <span>→</span></a>
+          </div>
+        </div>
+
+        <div class="cf-col cf-right">
+          <div class="cf-h">Jelajahi</div>
+          <div class="cf-links">
+            <a href="#tentang">Pengenalan</a>
+            <a href="#history">Riwayat</a>
+            <a href="#data">Data</a>
+            <a href="#peta">Peta</a>
+            <a href="#tour">Tour</a>
+            <a href="#hero">Kembali ke atas ↑</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="cf-bottom">
+        <span>WebGIS Candi Prambanan · © 2026 Proyek Akhir — Sekolah Vokasi UGM</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./lib/loader.js"></script>
+  <script src="./lib/intro.js"></script>
+  <script src="./lib/main.js"></script>
+  <script src="./lib/hero.js"></script>
+  <script src="./lib/carousel.js"></script>
+  <script src="./lib/data-scroll.js"></script>
+  <script src="./lib/history.js"></script>
+  <script src="./lib/peta.js"></script>
+  <script src="./lib/tour.js"></script>
+</body>
 </html>
